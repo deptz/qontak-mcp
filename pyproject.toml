@@ -1,0 +1,123 @@
+[project]
+name = "qontak-mcp"
+version = "0.1.0"
+description = "Qontak MCP - Manage Deals, Tickets, and Tasks in Qontak CRM"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "deptz"}
+]
+keywords = ["mcp", "qontak", "crm", "deals", "tickets", "tasks"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Communications :: Chat",
+    "Topic :: Office/Business :: Groupware",
+]
+
+# Pinned dependencies for security and reproducibility
+# Update these periodically after security review
+dependencies = [
+    "mcp[cli]==1.22.0",
+    "httpx==0.28.1",
+    "pydantic>=2.11.0",
+    "python-dotenv==1.0.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/deptz/qontak-mcp"
+Documentation = "https://github.com/deptz/qontak-mcp#readme"
+Repository = "https://github.com/deptz/qontak-mcp.git"
+Issues = "https://github.com/deptz/qontak-mcp/issues"
+Changelog = "https://github.com/deptz/qontak-mcp/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+redis = ["redis==5.2.1"]
+vault = ["hvac==2.3.0"]
+all = ["redis==5.2.1", "hvac==2.3.0"]
+dev = [
+    "pytest==8.3.4",
+    "pytest-asyncio==0.24.0",
+    "pytest-cov==6.0.0",
+    "respx==0.21.1",
+    "fakeredis==2.26.1",
+    "time-machine==2.16.0",
+    "mypy==1.13.0",
+    "ruff==0.8.2",
+    "pip-audit==2.7.3",
+    "pre-commit==3.5.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=src/qontak_mcp --cov-report=term-missing --cov-report=html -m 'not integration_manual'"
+markers = [
+    "integration_manual: Manual integration tests requiring real API access (run with -m integration_manual)",
+]
+
+[tool.coverage.run]
+source = ["src/qontak_mcp"]
+omit = [
+    "tests/*",
+    "**/__init__.py",
+    "src/qontak_mcp/stores/vault.py", # Optional vault store - requires HashiCorp Vault
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "except ImportError:",  # Backward compatibility fallback paths
+]
+
+[project.scripts]
+qontak-mcp = "qontak_mcp.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qontak_mcp"]
+
+# Ruff configuration for code quality
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "S",      # flake8-bandit (security)
+    "T20",    # flake8-print
+]
+ignore = [
+    "S101",   # assert used (OK in tests)
+]
+
+# MyPy configuration for type checking
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+strict = true
+
