@@ -605,3 +605,421 @@ class QontakClient:
         if not id_result.is_valid:
             return {"success": False, "error": id_result.error}
         return await self._request("DELETE", f"/tickets/{ticket_id}", user_id=user_id)
+    
+    # ===== CONTACTS =====
+    
+    async def get_contact_template(self, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Get contact template/schema."""
+        return await self._request("GET", "/contacts/info", user_id=user_id)
+    
+    async def list_contacts(
+        self,
+        page: int = 1,
+        per_page: int = 25,
+        user_id: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """List contacts with optional filters."""
+        pagination_result = validate_pagination(page, per_page)
+        if not pagination_result.is_valid:
+            return {"success": False, "error": pagination_result.error}
+        
+        params = {"page": page, "per_page": per_page}
+        return await self._request("GET", "/contacts", user_id=user_id, params=params)
+    
+    async def get_contact(self, contact_id: int, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Get a single contact by ID."""
+        id_result = validate_resource_id(contact_id, "contact_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("GET", f"/contacts/{contact_id}", user_id=user_id)
+    
+    async def create_contact(
+        self,
+        contact_data: dict[str, Any],
+        user_id: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Create a new contact."""
+        return await self._request("POST", "/contacts", user_id=user_id, json=contact_data)
+    
+    async def update_contact(
+        self,
+        contact_id: int,
+        contact_data: dict[str, Any],
+        user_id: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Update an existing contact."""
+        id_result = validate_resource_id(contact_id, "contact_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("PUT", f"/contacts/{contact_id}", user_id=user_id, json=contact_data)
+    
+    async def delete_contact(self, contact_id: int, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Delete a contact."""
+        id_result = validate_resource_id(contact_id, "contact_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("DELETE", f"/contacts/{contact_id}", user_id=user_id)
+    
+    async def get_contact_timeline(
+        self,
+        contact_id: int,
+        page: int = 1,
+        per_page: int = 25,
+        user_id: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """Get contact activity timeline."""
+        id_result = validate_resource_id(contact_id, "contact_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        pagination_result = validate_pagination(page, per_page)
+        if not pagination_result.is_valid:
+            return {"success": False, "error": pagination_result.error}
+        
+        params = {"page": page, "per_page": per_page}
+        return await self._request("GET", f"/contacts/{contact_id}/timeline", user_id=user_id, params=params)
+    
+    async def get_contact_chat_history(
+        self,
+        contact_id: int,
+        page: int = 1,
+        per_page: int = 25,
+        user_id: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """Get contact chat history."""
+        id_result = validate_resource_id(contact_id, "contact_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        pagination_result = validate_pagination(page, per_page)
+        if not pagination_result.is_valid:
+            return {"success": False, "error": pagination_result.error}
+        
+        params = {"page": page, "per_page": per_page}
+        return await self._request("GET", f"/contacts/{contact_id}/chat_history", user_id=user_id, params=params)
+    
+    async def update_contact_owner(
+        self,
+        contact_id: int,
+        creator_id: int,
+        user_id: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Update contact owner."""
+        id_result = validate_resource_id(contact_id, "contact_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        owner_data = {"creator_id": creator_id}
+        return await self._request("PUT", f"/contacts/{contact_id}/owner", user_id=user_id, json=owner_data)
+    
+    # ===== COMPANIES =====
+    
+    async def get_company_template(self, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Get company template/schema."""
+        return await self._request("GET", "/companies/info", user_id=user_id)
+    
+    async def list_companies(
+        self,
+        page: int = 1,
+        per_page: int = 25,
+        user_id: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """List companies with optional filters."""
+        pagination_result = validate_pagination(page, per_page)
+        if not pagination_result.is_valid:
+            return {"success": False, "error": pagination_result.error}
+        
+        params = {"page": page, "per_page": per_page}
+        return await self._request("GET", "/companies", user_id=user_id, params=params)
+    
+    async def get_company(self, company_id: int, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Get a single company by ID."""
+        id_result = validate_resource_id(company_id, "company_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("GET", f"/companies/{company_id}", user_id=user_id)
+    
+    async def create_company(
+        self,
+        company_data: dict[str, Any],
+        user_id: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Create a new company."""
+        return await self._request("POST", "/companies", user_id=user_id, json=company_data)
+    
+    async def update_company(
+        self,
+        company_id: int,
+        company_data: dict[str, Any],
+        user_id: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Update an existing company."""
+        id_result = validate_resource_id(company_id, "company_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("PUT", f"/companies/{company_id}", user_id=user_id, json=company_data)
+    
+    async def delete_company(self, company_id: int, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Delete a company."""
+        id_result = validate_resource_id(company_id, "company_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("DELETE", f"/companies/{company_id}", user_id=user_id)
+    
+    async def get_company_timeline(
+        self,
+        company_id: int,
+        page: int = 1,
+        per_page: int = 25,
+        user_id: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """Get company activity timeline."""
+        id_result = validate_resource_id(company_id, "company_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        pagination_result = validate_pagination(page, per_page)
+        if not pagination_result.is_valid:
+            return {"success": False, "error": pagination_result.error}
+        
+        params = {"page": page, "per_page": per_page}
+        return await self._request("GET", f"/companies/{company_id}/timeline", user_id=user_id, params=params)
+    
+    # ===== NOTES =====
+    
+    async def get_note_template(self, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Get note field definitions and schema (notes don't have templates in API, returns empty structure)."""
+        # Notes API doesn't have a template endpoint, return a simple structure
+        return {
+            "success": True,
+            "data": {
+                "message": "Notes have a simple structure: content (required), crm_lead_id, crm_company_id, or crm_deal_id"
+            }
+        }
+    
+    async def list_notes(
+        self,
+        page: int = 1,
+        per_page: int = 25,
+        crm_lead_id: Optional[int] = None,
+        crm_company_id: Optional[int] = None,
+        crm_deal_id: Optional[int] = None,
+        user_id: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """List notes with optional filters."""
+        pagination_result = validate_pagination(page, per_page)
+        if not pagination_result.is_valid:
+            return {"success": False, "error": pagination_result.error}
+        
+        params: dict[str, Any] = {"page": page, "per_page": per_page}
+        if crm_lead_id is not None:
+            params["crm_lead_id"] = crm_lead_id
+        if crm_company_id is not None:
+            params["crm_company_id"] = crm_company_id
+        if crm_deal_id is not None:
+            params["crm_deal_id"] = crm_deal_id
+        return await self._request("GET", "/notes", user_id=user_id, params=params)
+    
+    async def get_note(self, note_id: int, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Get a single note by ID."""
+        id_result = validate_resource_id(note_id, "note_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("GET", f"/notes/{note_id}", user_id=user_id)
+    
+    async def create_note(
+        self,
+        note_data: dict[str, Any],
+        user_id: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Create a new note."""
+        return await self._request("POST", "/notes", user_id=user_id, json=note_data)
+    
+    async def update_note(
+        self,
+        note_id: int,
+        note_data: dict[str, Any],
+        user_id: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Update an existing note."""
+        id_result = validate_resource_id(note_id, "note_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("PUT", f"/notes/{note_id}", user_id=user_id, json=note_data)
+    
+    async def delete_note(self, note_id: int, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Delete a note."""
+        id_result = validate_resource_id(note_id, "note_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("DELETE", f"/notes/{note_id}", user_id=user_id)
+    
+    # ===== PRODUCTS =====
+    
+    async def get_product_template(self, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Get product field definitions and schema (products don't have templates in API, returns empty structure)."""
+        # Products API doesn't have a template endpoint, return a simple structure
+        return {
+            "success": True,
+            "data": {
+                "message": "Products have fields: name (required), sku, price, description, etc."
+            }
+        }
+    
+    async def list_products(
+        self,
+        page: int = 1,
+        per_page: int = 25,
+        user_id: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """List products with optional filters."""
+        pagination_result = validate_pagination(page, per_page)
+        if not pagination_result.is_valid:
+            return {"success": False, "error": pagination_result.error}
+        
+        params = {"page": page, "per_page": per_page}
+        return await self._request("GET", "/products", user_id=user_id, params=params)
+    
+    async def get_product(self, product_id: int, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Get a single product by ID."""
+        id_result = validate_resource_id(product_id, "product_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("GET", f"/products/{product_id}", user_id=user_id)
+    
+    async def create_product(
+        self,
+        product_data: dict[str, Any],
+        user_id: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Create a new product."""
+        return await self._request("POST", "/products", user_id=user_id, json=product_data)
+    
+    async def update_product(
+        self,
+        product_id: int,
+        product_data: dict[str, Any],
+        user_id: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Update an existing product."""
+        id_result = validate_resource_id(product_id, "product_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("PUT", f"/products/{product_id}", user_id=user_id, json=product_data)
+    
+    async def delete_product(self, product_id: int, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Delete a product."""
+        id_result = validate_resource_id(product_id, "product_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("DELETE", f"/products/{product_id}", user_id=user_id)
+    
+    # ===== PRODUCTS ASSOCIATION =====
+    
+    async def get_products_association_template(self, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Get products association field definitions and schema (doesn't have templates in API, returns empty structure)."""
+        # Products Association API doesn't have a template endpoint, return a simple structure
+        return {
+            "success": True,
+            "data": {
+                "message": "Products associations link products to entities: product_id, entity_type (contact/company/deal), entity_id, quantity, price"
+            }
+        }
+    
+    async def list_products_associations(
+        self,
+        page: int = 1,
+        per_page: int = 25,
+        user_id: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """List product associations with optional filters."""
+        pagination_result = validate_pagination(page, per_page)
+        if not pagination_result.is_valid:
+            return {"success": False, "error": pagination_result.error}
+        
+        params = {"page": page, "per_page": per_page}
+        return await self._request("GET", "/products_association", user_id=user_id, params=params)
+    
+    async def get_products_association(self, association_id: int, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Get a single product association by ID."""
+        id_result = validate_resource_id(association_id, "association_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("GET", f"/products_association/{association_id}", user_id=user_id)
+    
+    async def create_products_association(
+        self,
+        association_data: dict[str, Any],
+        user_id: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Create a new product association."""
+        return await self._request("POST", "/products_association", user_id=user_id, json=association_data)
+    
+    async def update_products_association(
+        self,
+        association_id: int,
+        association_data: dict[str, Any],
+        user_id: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Update an existing product association."""
+        id_result = validate_resource_id(association_id, "association_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("PUT", f"/products_association/{association_id}", user_id=user_id, json=association_data)
+    
+    async def delete_products_association(self, association_id: int, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Delete a product association."""
+        id_result = validate_resource_id(association_id, "association_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("DELETE", f"/products_association/{association_id}", user_id=user_id)
+    
+    # ===== DEAL EXTENSIONS =====
+    
+    async def get_deal_chat_history(
+        self,
+        deal_id: int,
+        page: int = 1,
+        per_page: int = 25,
+        user_id: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """Get deal chat history."""
+        id_result = validate_resource_id(deal_id, "deal_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        pagination_result = validate_pagination(page, per_page)
+        if not pagination_result.is_valid:
+            return {"success": False, "error": pagination_result.error}
+        
+        params = {"page": page, "per_page": per_page}
+        return await self._request("GET", f"/deals/{deal_id}/chat_history", user_id=user_id, params=params)
+    
+    async def get_deal_real_creator(self, deal_id: int, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Get the real creator of a deal."""
+        id_result = validate_resource_id(deal_id, "deal_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("GET", f"/deals/{deal_id}/real_creator", user_id=user_id)
+    
+    async def get_deal_full_field(self, deal_id: int, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Get deal with full field information."""
+        id_result = validate_resource_id(deal_id, "deal_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("GET", f"/deals/{deal_id}/full_field", user_id=user_id)
+    
+    async def get_deal_permissions(self, deal_id: int, user_id: Optional[str] = None) -> dict[str, Any]:
+        """Get deal permissions."""
+        id_result = validate_resource_id(deal_id, "deal_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        return await self._request("GET", f"/deals/{deal_id}/permissions", user_id=user_id)
+    
+    async def update_deal_owner(
+        self,
+        deal_id: int,
+        creator_id: int,
+        user_id: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Update deal owner."""
+        id_result = validate_resource_id(deal_id, "deal_id")
+        if not id_result.is_valid:
+            return {"success": False, "error": id_result.error}
+        owner_data = {"creator_id": creator_id}
+        return await self._request("PUT", f"/deals/{deal_id}/owner", user_id=user_id, json=owner_data)

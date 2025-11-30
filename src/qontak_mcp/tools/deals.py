@@ -672,3 +672,131 @@ def register_deal_tools_lazy(
             return json.dumps(result, indent=2)
         except Exception as e:
             return json.dumps(safe_error_response(e, "get_required_fields_for_deal"), indent=2)
+    
+    @mcp.tool()
+    async def get_deal_chat_history(
+        deal_id: int,
+        page: int = 1,
+        per_page: int = 25,
+        user_id: Optional[str] = None,
+    ) -> str:
+        """
+        Get the chat history for a deal.
+        
+        Retrieves chat conversations associated with this deal.
+        Requires CRM integration with chat panel.
+        
+        Args:
+            deal_id: The ID of the deal
+            page: Page number (default: 1)
+            per_page: Number of messages per page (default: 25)
+            user_id: Optional user/tenant identifier
+        
+        Returns:
+            JSON string with deal chat history
+        """
+        try:
+            params = DealTimelineParams(deal_id=deal_id, page=page, per_page=per_page, user_id=user_id)
+            client = get_client()
+            result = await client.get_deal_chat_history(
+                deal_id=params.deal_id, page=params.page, per_page=params.per_page, user_id=params.user_id
+            )
+            return json.dumps(result, indent=2)
+        except Exception as e:
+            return json.dumps(safe_error_response(e, "get_deal_chat_history"), indent=2)
+    
+    @mcp.tool()
+    async def get_deal_real_creator(deal_id: int, user_id: Optional[str] = None) -> str:
+        """
+        Get the real creator (original creator) of a deal.
+        
+        Returns information about who originally created the deal.
+        
+        Args:
+            deal_id: The ID of the deal
+            user_id: Optional user/tenant identifier
+        
+        Returns:
+            JSON string with creator information
+        """
+        try:
+            params = DealGetParams(deal_id=deal_id, user_id=user_id)
+            client = get_client()
+            result = await client.get_deal_real_creator(deal_id=params.deal_id, user_id=params.user_id)
+            return json.dumps(result, indent=2)
+        except Exception as e:
+            return json.dumps(safe_error_response(e, "get_deal_real_creator"), indent=2)
+    
+    @mcp.tool()
+    async def get_deal_full_field(deal_id: int, user_id: Optional[str] = None) -> str:
+        """
+        Get deal with complete field information.
+        
+        Returns a deal with download-like fields and complete details.
+        
+        Args:
+            deal_id: The ID of the deal
+            user_id: Optional user/tenant identifier
+        
+        Returns:
+            JSON string with complete deal field information
+        """
+        try:
+            params = DealGetParams(deal_id=deal_id, user_id=user_id)
+            client = get_client()
+            result = await client.get_deal_full_field(deal_id=params.deal_id, user_id=params.user_id)
+            return json.dumps(result, indent=2)
+        except Exception as e:
+            return json.dumps(safe_error_response(e, "get_deal_full_field"), indent=2)
+    
+    @mcp.tool()
+    async def get_deal_permissions(deal_id: int, user_id: Optional[str] = None) -> str:
+        """
+        Get permissions for a deal.
+        
+        Returns the permission settings for the specified deal including
+        who has access and what operations they can perform.
+        
+        Args:
+            deal_id: The ID of the deal
+            user_id: Optional user/tenant identifier
+        
+        Returns:
+            JSON string with deal permissions information
+        """
+        try:
+            params = DealGetParams(deal_id=deal_id, user_id=user_id)
+            client = get_client()
+            result = await client.get_deal_permissions(deal_id=params.deal_id, user_id=params.user_id)
+            return json.dumps(result, indent=2)
+        except Exception as e:
+            return json.dumps(safe_error_response(e, "get_deal_permissions"), indent=2)
+    
+    @mcp.tool()
+    async def update_deal_owner(
+        deal_id: int,
+        creator_id: int,
+        user_id: Optional[str] = None,
+    ) -> str:
+        """
+        Update the owner of a deal.
+        
+        Changes the user who owns/manages this deal.
+        
+        Args:
+            deal_id: The ID of the deal to update (required)
+            creator_id: The ID of the new owner/user (required)
+            user_id: Optional user/tenant identifier
+        
+        Returns:
+            JSON string with the updated deal details
+        """
+        try:
+            params = DealGetParams(deal_id=deal_id, user_id=user_id)
+            client = get_client()
+            result = await client.update_deal_owner(
+                deal_id=params.deal_id, creator_id=creator_id, user_id=params.user_id
+            )
+            return json.dumps(result, indent=2)
+        except Exception as e:
+            return json.dumps(safe_error_response(e, "update_deal_owner"), indent=2)

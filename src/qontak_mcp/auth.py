@@ -70,7 +70,7 @@ class QontakAuth:
         
         response = await client.post(
             QONTAK_TOKEN_URL,
-            data={
+            json={
                 "grant_type": "refresh_token",
                 "refresh_token": refresh_token,
             }

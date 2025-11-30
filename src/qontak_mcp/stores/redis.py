@@ -76,6 +76,9 @@ class RedisTokenStore(TokenStore):
         """
         Retrieve token data from Redis.
         
+        If no token is found in Redis and this is the default user, attempts to
+        initialize from QONTAK_REFRESH_TOKEN environment variable.
+        
         Args:
             user_id: User/tenant identifier. Uses "_default" if not provided.
         
@@ -87,6 +90,14 @@ class RedisTokenStore(TokenStore):
         try:
             data = self._redis.get(key)
             if data is None:
+                # If no token in Redis and no specific user_id, try to initialize from env
+                if not user_id:
+                    refresh_token = os.getenv("QONTAK_REFRESH_TOKEN")
+                    if refresh_token:
+                        # Initialize Redis with the env token
+                        token_data = TokenData(refresh_token=refresh_token)
+                        self.save(token_data, user_id)
+                        return token_data
                 return None
             
             token_dict = json.loads(data)

@@ -161,12 +161,22 @@ def _create_lazy_tool_registrar():
     from .tools.deals import register_deal_tools_lazy
     from .tools.tickets import register_ticket_tools_lazy
     from .tools.tasks import register_task_tools_lazy
+    from .tools.contacts import register_contact_tools_lazy
+    from .tools.companies import register_company_tools_lazy
+    from .tools.notes import register_note_tools_lazy
+    from .tools.products import register_product_tools_lazy
+    from .tools.products_association import register_products_association_tools_lazy
     
     # Register tools with the get_client function
     # Tools will call get_client() when invoked, not at registration
     register_deal_tools_lazy(mcp, get_client)
     register_ticket_tools_lazy(mcp, get_client)
     register_task_tools_lazy(mcp, get_client)
+    register_contact_tools_lazy(mcp, get_client)
+    register_company_tools_lazy(mcp, get_client)
+    register_note_tools_lazy(mcp, get_client)
+    register_product_tools_lazy(mcp, get_client)
+    register_products_association_tools_lazy(mcp, get_client)
 
 
 # We need to handle the case where the lazy registration functions
@@ -176,7 +186,11 @@ try:
 except ImportError:
     # Fall back to old registration style (but still defer client creation)
     # This maintains backward compatibility while we migrate
-    from .tools import register_deal_tools, register_ticket_tools, register_task_tools
+    from .tools import (
+        register_deal_tools, register_ticket_tools, register_task_tools,
+        register_contact_tools, register_company_tools, register_note_tools,
+        register_product_tools, register_products_association_tools
+    )
     
     # Create a proxy that defers to the real client
     class _LazyClientProxy:
@@ -189,6 +203,11 @@ except ImportError:
     register_deal_tools(mcp, _lazy_proxy)  # type: ignore
     register_ticket_tools(mcp, _lazy_proxy)  # type: ignore
     register_task_tools(mcp, _lazy_proxy)  # type: ignore
+    register_contact_tools(mcp, _lazy_proxy)  # type: ignore
+    register_company_tools(mcp, _lazy_proxy)  # type: ignore
+    register_note_tools(mcp, _lazy_proxy)  # type: ignore
+    register_product_tools(mcp, _lazy_proxy)  # type: ignore
+    register_products_association_tools(mcp, _lazy_proxy)  # type: ignore
 
 
 # Expose the ASGI app for SSE/HTTP

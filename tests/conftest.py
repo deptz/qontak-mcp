@@ -34,7 +34,9 @@ def mock_redis() -> Generator[MagicMock, None, None]:
         import fakeredis
         fake_redis = fakeredis.FakeRedis(decode_responses=True)
         mock_from_url.return_value = fake_redis
-        yield fake_redis
+        # Clear any QONTAK_REFRESH_TOKEN to prevent auto-initialization
+        with patch.dict(os.environ, {"QONTAK_REFRESH_TOKEN": ""}, clear=False):
+            yield fake_redis
 
 @pytest.fixture
 async def auth(mock_env) -> QontakAuth:

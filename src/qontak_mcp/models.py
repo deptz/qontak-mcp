@@ -570,3 +570,570 @@ class TaskCategoryCreateParams(SecureBaseModel, TenantMixin):
 class TaskCategoryListParams(SecureBaseModel, TenantMixin, PaginationMixin):
     """Parameters for listing task categories."""
     pass
+
+
+# =============================================================================
+# Contact Models
+# =============================================================================
+
+class ContactListParams(SecureBaseModel, TenantMixin, PaginationMixin):
+    """Parameters for listing contacts."""
+    pass
+
+
+class ContactGetParams(SecureBaseModel, TenantMixin):
+    """Parameters for getting a single contact."""
+    
+    contact_id: PositiveInt = Field(description="The contact ID to retrieve")
+
+
+class ContactCreateParams(SecureBaseModel, TenantMixin):
+    """Parameters for creating a contact."""
+    
+    first_name: str = Field(
+        min_length=1,
+        max_length=MAX_NAME_LENGTH,
+        description="Contact first name"
+    )
+    last_name: Optional[str] = Field(
+        default=None,
+        max_length=MAX_NAME_LENGTH,
+        description="Contact last name"
+    )
+    email: Optional[str] = Field(
+        default=None,
+        max_length=255,
+        description="Email address"
+    )
+    telephone: Optional[str] = Field(
+        default=None,
+        max_length=50,
+        description="Phone number"
+    )
+    job_title: Optional[str] = Field(
+        default=None,
+        max_length=255,
+        description="Job title"
+    )
+    crm_status_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="CRM status ID"
+    )
+    crm_company_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="Associated company ID"
+    )
+    address: Optional[str] = Field(
+        default=None,
+        max_length=500,
+        description="Street address"
+    )
+    city: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="City"
+    )
+    province: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="Province/State"
+    )
+    country: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="Country"
+    )
+    zipcode: Optional[str] = Field(
+        default=None,
+        max_length=20,
+        description="ZIP/Postal code"
+    )
+    date_of_birth: Optional[str] = Field(
+        default=None,
+        description="Date of birth (YYYY-MM-DD)"
+    )
+    additional_fields: Optional[list[dict[str, Any]]] = Field(
+        default=None,
+        description="Additional/custom field values as array"
+    )
+    
+    @field_validator('date_of_birth')
+    @classmethod
+    def validate_date(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return None
+        if not DATE_PATTERN.match(v):
+            raise ValueError('Date must be in YYYY-MM-DD format')
+        return v
+
+
+class ContactUpdateParams(SecureBaseModel, TenantMixin):
+    """Parameters for updating a contact."""
+    
+    contact_id: PositiveInt = Field(description="The contact ID to update")
+    first_name: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        max_length=MAX_NAME_LENGTH,
+        description="New first name"
+    )
+    last_name: Optional[str] = Field(
+        default=None,
+        max_length=MAX_NAME_LENGTH,
+        description="New last name"
+    )
+    email: Optional[str] = Field(
+        default=None,
+        max_length=255,
+        description="New email address"
+    )
+    telephone: Optional[str] = Field(
+        default=None,
+        max_length=50,
+        description="New phone number"
+    )
+    job_title: Optional[str] = Field(
+        default=None,
+        max_length=255,
+        description="New job title"
+    )
+    crm_status_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="New CRM status ID"
+    )
+    crm_company_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="New associated company ID"
+    )
+    address: Optional[str] = Field(
+        default=None,
+        max_length=500,
+        description="New street address"
+    )
+    city: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="New city"
+    )
+    province: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="New province/state"
+    )
+    country: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="New country"
+    )
+    zipcode: Optional[str] = Field(
+        default=None,
+        max_length=20,
+        description="New ZIP/Postal code"
+    )
+    date_of_birth: Optional[str] = Field(
+        default=None,
+        description="New date of birth (YYYY-MM-DD)"
+    )
+    additional_fields: Optional[list[dict[str, Any]]] = Field(
+        default=None,
+        description="Additional/custom fields to update"
+    )
+    
+    @field_validator('date_of_birth')
+    @classmethod
+    def validate_date(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return None
+        if not DATE_PATTERN.match(v):
+            raise ValueError('Date must be in YYYY-MM-DD format')
+        return v
+    
+    @model_validator(mode='after')
+    def check_at_least_one_field(self) -> 'ContactUpdateParams':
+        update_fields = ['first_name', 'last_name', 'email', 'telephone', 'job_title',
+                        'crm_status_id', 'crm_company_id', 'address', 'city', 'province',
+                        'country', 'zipcode', 'date_of_birth', 'additional_fields']
+        if not any(getattr(self, f) is not None for f in update_fields):
+            raise ValueError('At least one field must be provided for update')
+        return self
+
+
+class ContactTimelineParams(SecureBaseModel, TenantMixin, PaginationMixin):
+    """Parameters for getting contact timeline."""
+    
+    contact_id: PositiveInt = Field(description="The contact ID")
+
+
+# =============================================================================
+# Company Models
+# =============================================================================
+
+class CompanyListParams(SecureBaseModel, TenantMixin, PaginationMixin):
+    """Parameters for listing companies."""
+    pass
+
+
+class CompanyGetParams(SecureBaseModel, TenantMixin):
+    """Parameters for getting a single company."""
+    
+    company_id: PositiveInt = Field(description="The company ID to retrieve")
+
+
+class CompanyCreateParams(SecureBaseModel, TenantMixin):
+    """Parameters for creating a company."""
+    
+    name: str = Field(
+        min_length=1,
+        max_length=MAX_NAME_LENGTH,
+        description="Company name"
+    )
+    crm_status_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="CRM status ID"
+    )
+    address: Optional[str] = Field(
+        default=None,
+        max_length=500,
+        description="Street address"
+    )
+    city: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="City"
+    )
+    province: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="Province/State"
+    )
+    country: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="Country"
+    )
+    zipcode: Optional[str] = Field(
+        default=None,
+        max_length=20,
+        description="ZIP/Postal code"
+    )
+    telephone: Optional[str] = Field(
+        default=None,
+        max_length=50,
+        description="Phone number"
+    )
+    email: Optional[str] = Field(
+        default=None,
+        max_length=255,
+        description="Email address"
+    )
+    website: Optional[str] = Field(
+        default=None,
+        max_length=500,
+        description="Website URL"
+    )
+    additional_fields: Optional[list[dict[str, Any]]] = Field(
+        default=None,
+        description="Additional/custom field values as array"
+    )
+
+
+class CompanyUpdateParams(SecureBaseModel, TenantMixin):
+    """Parameters for updating a company."""
+    
+    company_id: PositiveInt = Field(description="The company ID to update")
+    name: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        max_length=MAX_NAME_LENGTH,
+        description="New company name"
+    )
+    crm_status_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="New CRM status ID"
+    )
+    address: Optional[str] = Field(
+        default=None,
+        max_length=500,
+        description="New street address"
+    )
+    city: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="New city"
+    )
+    province: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="New province/state"
+    )
+    country: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="New country"
+    )
+    zipcode: Optional[str] = Field(
+        default=None,
+        max_length=20,
+        description="New ZIP/Postal code"
+    )
+    telephone: Optional[str] = Field(
+        default=None,
+        max_length=50,
+        description="New phone number"
+    )
+    email: Optional[str] = Field(
+        default=None,
+        max_length=255,
+        description="New email address"
+    )
+    website: Optional[str] = Field(
+        default=None,
+        max_length=500,
+        description="New website URL"
+    )
+    additional_fields: Optional[list[dict[str, Any]]] = Field(
+        default=None,
+        description="Additional/custom fields to update"
+    )
+    
+    @model_validator(mode='after')
+    def check_at_least_one_field(self) -> 'CompanyUpdateParams':
+        update_fields = ['name', 'crm_status_id', 'address', 'city', 'province',
+                        'country', 'zipcode', 'telephone', 'email', 'website',
+                        'additional_fields']
+        if not any(getattr(self, f) is not None for f in update_fields):
+            raise ValueError('At least one field must be provided for update')
+        return self
+
+
+class CompanyTimelineParams(SecureBaseModel, TenantMixin, PaginationMixin):
+    """Parameters for getting company timeline."""
+    
+    company_id: PositiveInt = Field(description="The company ID")
+
+
+# =============================================================================
+# Note Models
+# =============================================================================
+
+class NoteListParams(SecureBaseModel, TenantMixin, PaginationMixin):
+    """Parameters for listing notes."""
+    
+    crm_lead_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="Filter by associated contact/lead ID"
+    )
+    crm_company_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="Filter by associated company ID"
+    )
+    crm_deal_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="Filter by associated deal ID"
+    )
+
+
+class NoteGetParams(SecureBaseModel, TenantMixin):
+    """Parameters for getting a single note."""
+    
+    note_id: PositiveInt = Field(description="The note ID to retrieve")
+
+
+class NoteCreateParams(SecureBaseModel, TenantMixin):
+    """Parameters for creating a note."""
+    
+    title: str = Field(
+        min_length=1,
+        max_length=MAX_NAME_LENGTH,
+        description="Note title"
+    )
+    content: str = Field(
+        min_length=1,
+        max_length=MAX_DESCRIPTION_LENGTH,
+        description="Note content/body"
+    )
+    crm_lead_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="Associated contact/lead ID"
+    )
+    crm_company_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="Associated company ID"
+    )
+    crm_deal_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="Associated deal ID"
+    )
+
+
+class NoteUpdateParams(SecureBaseModel, TenantMixin):
+    """Parameters for updating a note."""
+    
+    note_id: PositiveInt = Field(description="The note ID to update")
+    title: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        max_length=MAX_NAME_LENGTH,
+        description="New note title"
+    )
+    content: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        max_length=MAX_DESCRIPTION_LENGTH,
+        description="New note content/body"
+    )
+    
+    @model_validator(mode='after')
+    def check_at_least_one_field(self) -> 'NoteUpdateParams':
+        if self.title is None and self.content is None:
+            raise ValueError('At least one field (title or content) must be provided for update')
+        return self
+
+
+# =============================================================================
+# Product Models
+# =============================================================================
+
+class ProductListParams(SecureBaseModel, TenantMixin, PaginationMixin):
+    """Parameters for listing products."""
+    pass
+
+
+class ProductGetParams(SecureBaseModel, TenantMixin):
+    """Parameters for getting a single product."""
+    
+    product_id: PositiveInt = Field(description="The product ID to retrieve")
+
+
+class ProductCreateParams(SecureBaseModel, TenantMixin):
+    """Parameters for creating a product."""
+    
+    name: str = Field(
+        min_length=1,
+        max_length=MAX_NAME_LENGTH,
+        description="Product name"
+    )
+    price: Optional[float] = Field(
+        default=None,
+        ge=0,
+        description="Product price"
+    )
+    sku: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="SKU/Product code"
+    )
+    description: Optional[str] = Field(
+        default=None,
+        max_length=MAX_DESCRIPTION_LENGTH,
+        description="Product description"
+    )
+    category: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="Product category"
+    )
+
+
+class ProductUpdateParams(SecureBaseModel, TenantMixin):
+    """Parameters for updating a product."""
+    
+    product_id: PositiveInt = Field(description="The product ID to update")
+    name: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        max_length=MAX_NAME_LENGTH,
+        description="New product name"
+    )
+    price: Optional[float] = Field(
+        default=None,
+        ge=0,
+        description="New product price"
+    )
+    sku: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="New SKU/Product code"
+    )
+    description: Optional[str] = Field(
+        default=None,
+        max_length=MAX_DESCRIPTION_LENGTH,
+        description="New product description"
+    )
+    category: Optional[str] = Field(
+        default=None,
+        max_length=100,
+        description="New product category"
+    )
+    
+    @model_validator(mode='after')
+    def check_at_least_one_field(self) -> 'ProductUpdateParams':
+        update_fields = ['name', 'price', 'sku', 'description', 'category']
+        if not any(getattr(self, f) is not None for f in update_fields):
+            raise ValueError('At least one field must be provided for update')
+        return self
+
+
+# =============================================================================
+# Products Association Models
+# =============================================================================
+
+class ProductsAssociationListParams(SecureBaseModel, TenantMixin, PaginationMixin):
+    """Parameters for listing product associations."""
+    pass
+
+
+class ProductsAssociationGetParams(SecureBaseModel, TenantMixin):
+    """Parameters for getting a single product association."""
+    
+    association_id: PositiveInt = Field(description="The product association ID to retrieve")
+
+
+class ProductsAssociationCreateParams(SecureBaseModel, TenantMixin):
+    """Parameters for creating a product association."""
+    
+    product_id: PositiveInt = Field(description="Product ID to associate")
+    crm_deal_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="Deal ID to associate with"
+    )
+    crm_lead_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="Contact/Lead ID to associate with"
+    )
+    crm_company_id: Optional[PositiveInt] = Field(
+        default=None,
+        description="Company ID to associate with"
+    )
+    quantity: Optional[int] = Field(
+        default=None,
+        ge=1,
+        description="Quantity of product"
+    )
+    price: Optional[float] = Field(
+        default=None,
+        ge=0,
+        description="Price for this association"
+    )
+
+
+class ProductsAssociationUpdateParams(SecureBaseModel, TenantMixin):
+    """Parameters for updating a product association."""
+    
+    association_id: PositiveInt = Field(description="The product association ID to update")
+    quantity: Optional[int] = Field(
+        default=None,
+        ge=1,
+        description="New quantity"
+    )
+    price: Optional[float] = Field(
+        default=None,
+        ge=0,
+        description="New price"
+    )
+    
+    @model_validator(mode='after')
+    def check_at_least_one_field(self) -> 'ProductsAssociationUpdateParams':
+        if self.quantity is None and self.price is None:
+            raise ValueError('At least one field (quantity or price) must be provided for update')
+        return self
