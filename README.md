@@ -7,16 +7,21 @@
 > APIs and functionality may change without notice. Use at your own risk.
 > Community feedback and contributions are welcome!
 
-Qontak MCP is a Model Context Protocol (MCP) server that provides **23 intelligent tools** for managing Deals, Tickets, and Tasks in Qontak CRM with **dynamic field discovery**.
+Qontak MCP is a Model Context Protocol (MCP) server that provides **61 intelligent tools** for managing Contacts, Companies, Deals, Tickets, Tasks, Notes, Products, and Products Associations in Qontak CRM with **dynamic field discovery**.
 
 ## Features
 
 ### Core Capabilities
 
-- **23 Intelligent MCP Tools** for comprehensive Qontak CRM operations
-  - **Deals (8 tools)**: Complete deal lifecycle management with pipeline/stage-aware required fields
+- **61 Intelligent MCP Tools** for comprehensive Qontak CRM operations
+  - **Contacts (10 tools)**: Complete contact management with template discovery, CRUD, timeline, chat history
+  - **Companies (8 tools)**: Full company management with dynamic field support
+  - **Deals (14 tools)**: Complete deal lifecycle management with pipeline/stage-aware required fields, chat history, permissions
   - **Tickets (7 tools)**: Full ticket workflow with pipeline-specific field requirements  
   - **Tasks (8 tools)**: Task management with automatic status, detail, and next_step field discovery
+  - **Notes (5 tools)**: Note creation and management with entity associations (contacts, companies, deals)
+  - **Products (5 tools)**: Product catalog management with pricing and SKU support
+  - **Products Association (5 tools)**: Link products to deals, contacts, or companies
 - **Dynamic Field Discovery** - The game changer:
   - 🚀 **Zero hardcoded values** - all required fields discovered at runtime from API templates
   - 🎯 **Smart categorization** - automatically identifies required vs optional fields
@@ -29,9 +34,12 @@ Qontak MCP is a Model Context Protocol (MCP) server that provides **23 intellige
   - ✅ **Rate limiting**: Token bucket algorithm with per-user and global limits
   - ✅ **Security first**: Pydantic validation, structured logging, sensitive data redaction
 - **Battle-Tested Quality**:
-  - ✅ 437+ unit tests covering all functionality
-  - ✅ 34 integration tests with real API validation
+  - ✅ 808 tests covering all functionality
+  - ✅ 15 integration test files with real API validation
   - ✅ 100% dynamic field discovery verified
+  - ✅ 96% code coverage across core modules
+  - ✅ 100% coverage on authentication and all 8 tools modules
+  - ✅ 91% coverage on API client with comprehensive error handling
 
 ## Token Store Selection
 
@@ -245,7 +253,35 @@ qontak-mcp
 
 ### Available Tools
 
-#### Deals
+#### Contacts (10 tools)
+
+| Tool | Description |
+|------|-------------|
+| `get_contact_template` | Get contact field definitions and schema |
+| `get_required_fields_for_contact` | 🆕 Dynamically discover required fields for contacts |
+| `list_contacts` | List contacts with pagination and filters |
+| `get_contact` | Get a single contact by ID |
+| `create_contact` | Create a new contact with dynamic field support |
+| `update_contact` | Update an existing contact |
+| `delete_contact` | Delete a contact by ID |
+| `get_contact_timeline` | View contact activity timeline |
+| `get_contact_chat_history` | Retrieve chat history for contacts |
+| `update_contact_owner` | Change contact ownership |
+
+#### Companies (8 tools)
+
+| Tool | Description |
+|------|-------------|
+| `get_company_template` | Get company field definitions and schema |
+| `get_required_fields_for_company` | 🆕 Dynamically discover required fields for companies |
+| `list_companies` | List companies with pagination |
+| `get_company` | Get a single company by ID |
+| `create_company` | Create a new company with dynamic field support |
+| `update_company` | Update an existing company |
+| `delete_company` | Delete a company by ID |
+| `get_company_timeline` | View company activity timeline |
+
+#### Deals (14 tools)
 
 | Tool | Description |
 |------|-------------|
@@ -258,8 +294,13 @@ qontak-mcp
 | `delete_deal` | Delete a deal by ID |
 | `get_deal_timeline` | Get deal activity timeline |
 | `get_deal_stage_history` | Get deal stage change history |
+| `get_deal_chat_history` | 🆕 Retrieve chat history for deals |
+| `get_deal_real_creator` | 🆕 Get original creator of a deal |
+| `get_deal_full_field` | 🆕 Get deal with complete field information |
+| `get_deal_permissions` | 🆕 Check user permissions for deals |
+| `update_deal_owner` | 🆕 Change deal ownership |
 
-#### Tickets
+#### Tickets (7 tools)
 
 | Tool | Description |
 |------|-------------|
@@ -272,7 +313,7 @@ qontak-mcp
 | `delete_ticket` | Delete a ticket by ID |
 | `get_ticket_pipelines` | Get available ticket pipelines and stages |
 
-#### Tasks
+#### Tasks (8 tools)
 
 | Tool | Description |
 |------|-------------|
@@ -285,6 +326,36 @@ qontak-mcp
 | `delete_task` | Delete a task by ID |
 | `list_task_categories` | List available task categories |
 | `create_task_category` | Create a new task category |
+
+#### Notes (5 tools)
+
+| Tool | Description |
+|------|-------------|
+| `list_notes` | List notes with filtering by contact/company/deal |
+| `get_note` | Get a single note by ID |
+| `create_note` | Create notes associated with contacts, companies, or deals |
+| `update_note` | Update an existing note |
+| `delete_note` | Delete a note by ID |
+
+#### Products (5 tools)
+
+| Tool | Description |
+|------|-------------|
+| `list_products` | List products with pagination |
+| `get_product` | Get a single product by ID |
+| `create_product` | Create new products with pricing and SKU |
+| `update_product` | Update an existing product |
+| `delete_product` | Delete a product by ID |
+
+#### Products Association (5 tools)
+
+| Tool | Description |
+|------|-------------|
+| `list_products_associations` | List product associations with pagination |
+| `get_products_association` | Get a single product association by ID |
+| `create_products_association` | Link products to deals, contacts, or companies |
+| `update_products_association` | Update existing product associations |
+| `delete_products_association` | Delete product associations by ID |
 
 ### Custom Fields
 
@@ -343,7 +414,7 @@ list_deals(page=1, per_page=25, user_id="tenant-123")
 
 ```
 ┌─────────────────────────────────────────┐
-│             MCP Tools (20)              │
+│             MCP Tools (61)              │
 └─────────────────┬───────────────────────┘
                   │
                   ▼
