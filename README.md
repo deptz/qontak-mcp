@@ -439,6 +439,74 @@ list_deals(page=1, per_page=25, user_id="tenant-123")
 └─────────────────┴─────────────────┴─────────────────────────┘
 ```
 
+## Kimi Code CLI Skill
+
+This repository includes a **Qontak MCP Developer Skill** for [Kimi Code CLI](https://github.com/moonshotai/Kimi-Chat-CLI) that provides intelligent assistance when working with the codebase.
+
+### What's Included
+
+The skill provides comprehensive documentation for both **users** and **developers**:
+
+**For Users:**
+- **Usage Guide**: How to use all 61 MCP tools with examples and workflows
+- **Custom Fields Guide**: Working with dynamic fields and additional_fields
+- **Common Workflows**: Sales pipeline, support tickets, data import patterns
+
+**For Developers:**
+- **4 Core Workflows**: Add new tools, create token stores, implement dynamic field discovery, debug tests
+- **Architecture Guide**: System components, data flow, security layers
+- **Tool Patterns**: Complete patterns for all 6 tool categories (list, get, create, update, template, dynamic fields)
+- **Domain References**: Resource-specific guides (deals, contacts, companies, tickets, tasks, notes, products)
+- **Testing Patterns**: Fixtures, unit/integration test patterns, coverage configuration
+- **Boilerplate Generator**: Script to scaffold new tools
+
+### Skill Location
+
+```
+.agents/skills/qontak-mcp-developer/
+├── SKILL.md                    # Entry point with workflows
+├── scripts/
+│   └── add_tool.py             # Tool boilerplate generator
+└── references/
+    ├── usage_guide.md          # How to use the MCP (for end users)
+    ├── architecture.md         # System architecture
+    ├── tool_patterns.md        # Tool implementation patterns
+    ├── dynamic_fields.md       # Field discovery patterns
+    ├── token_stores.md         # Token store backend guide
+    ├── testing.md              # Testing patterns
+    ├── models.md               # Pydantic model patterns
+    └── domains/                # Resource-specific guides
+        ├── deals.md
+        └── contacts.md
+```
+
+### Using the Skill
+
+When using Kimi Code CLI in this repository, the skill automatically activates for requests like:
+
+**For Users:**
+- "How do I create a deal with custom fields?"
+- "What's the workflow for adding a contact?"
+- "How do I move a deal to the next stage?"
+- "What are the required fields for a ticket?"
+- "How do I link a product to a deal?"
+
+**For Developers:**
+- "Add a new tool for deal tags"
+- "How do I create a new token store backend?"
+- "Implement dynamic field discovery for tickets"
+- "Fix the test for contact validation"
+- "Explain the deal pipeline requirements"
+
+### Manual Skill Usage
+
+Generate boilerplate for a new tool:
+
+```bash
+cd .agents/skills/qontak-mcp-developer
+python scripts/add_tool.py deals get_deal_tags get_deal_tags
+```
+
 ## Development
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
